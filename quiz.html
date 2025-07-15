@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>10問クイズ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .quiz-box {
+      background: white;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .choices button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .choices button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    #next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #next-btn:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-box">
+    <h1>🧠 10問クイズチャレンジ</h1>
+    <div class="question" id="question">読み込み中...</div>
+    <div class="choices" id="choices"></div>
+    <div class="result" id="result"></div>
+    <button id="next-btn" onclick="nextQuestion()">次の問題へ</button>
+  </div>
+
+  <script>
+    const quizList = [
+      { question: "アメリカの首都は？", choices: ["ニューヨーク", "ワシントンD.C.", "ロサンゼルス", "ボストン"], answer: "ワシントンD.C." },
+      { question: "日本の通貨は？", choices: ["円", "ドル", "ウォン", "ユーロ"], answer: "円" },
+      { question: "HTMLの正式名称は？", choices: ["Hyper Text Makeup Language", "Hyper Tool Markup Language", "Hyper Text Markup Language", "High Text Markup Language"], answer: "Hyper Text Markup Language" },
+      { question: "富士山の高さは？", choices: ["3000m", "3776m", "4000m", "3560m"], answer: "3776m" },
+      { question: "日本の首都は？", choices: ["大阪", "東京", "京都", "名古屋"], answer: "東京" },
+      { question: "地球は何番目の惑星？", choices: ["2番目", "3番目", "4番目", "5番目"], answer: "3番目" },
+      { question: "りんごは英語で？", choices: ["Banana", "Apple", "Grape", "Orange"], answer: "Apple" },
+      { question: "1+1は？", choices: ["1", "2", "3", "4"], answer: "2" },
+      { question: "水の化学式は？", choices: ["H2O", "O2", "CO2", "NaCl"], answer: "H2O" },
+      { question: "太陽の色は？", choices: ["赤", "黄", "青", "白"], answer: "黄" }
+    ];
+
+    let current = 0;
+    let score = 0;
+    const shuffled = quizList.sort(() => Math.random() - 0.5);
+
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("next-btn");
+
+    function showQuestion() {
+      resultEl.textContent = "";
+      nextBtn.style.display = "none";
+      const quiz = shuffled[current];
+      questionEl.textContent = `Q${current + 1}. ${quiz.question}`;
+      choicesEl.innerHTML = "";
+      quiz.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.onclick = () => {
+          if (choice === quiz.answer) {
+            resultEl.textContent = "✅ 正解！";
+            resultEl.style.color = "green";
+            score++;
+          } else {
+            resultEl.textContent = `❌ 不正解！正解は「${quiz.answer}」`;
+            resultEl.style.color = "red";
+          }
+          Array.from(choicesEl.children).forEach(b => b.disabled = true);
+          nextBtn.style.display = "inline-block";
+        };
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < 10) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      questionEl.textContent = "🎉 結果発表";
+      choicesEl.innerHTML = "";
+      resultEl.innerHTML = `あなたのスコアは <strong>${score} / 10</strong> です！`;
+      nextBtn.style.display = "none";
+    }
+
+    showQuestion();
+  </script>
+
+</body>
+</html>
